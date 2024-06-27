@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-06-26 16:07:46
  * @LastEditors: 张良 1077167261@qq.com
- * @LastEditTime: 2024-06-27 10:41:49
+ * @LastEditTime: 2024-06-27 11:18:24
  * @FilePath: \My-admin\src\views\login\index.vue
 -->
 <template>
@@ -31,11 +31,15 @@
               show-password
             ></el-input>
           </el-form-item>
-          <el-form-item>
-            <el-checkbox> 已阅读平台用户使用协议 </el-checkbox>
+          <el-form-item prop="isAgree">
+            <el-checkbox v-model="loginForm.isAgree">
+              已阅读平台用户使用协议
+            </el-checkbox>
           </el-form-item>
           <el-form-item>
-            <el-button style="width: 350px" type="primary">登录</el-button>
+            <el-button style="width: 350px" type="primary" @click="login"
+              >登录</el-button
+            >
           </el-form-item>
         </el-form>
       </el-card>
@@ -43,6 +47,8 @@
   </div>
 </template>
 <script>
+import { login } from "@/api/user";
+
 export default {
   name: "Login",
   data() {
@@ -73,13 +79,35 @@ export default {
           },
           {
             pattern: /^(?=.*[a-z])(?=.*[A-Z])[A-Za-z\d@#$%^&*?!]{6,10}$/,
-            message:
-              "密码6~10位必须有大小写可以有特殊字符",
+            message: "密码6~10位必须有大小写可以有特殊字符",
             trigger: "blur",
+          },
+        ],
+        // required只能检查 null "" undefined
+        isAgree: [
+          {
+            validator: (rule, value, callback) => {
+              // rule规则
+              // value检查的数据 true/false
+              // callback 函数 执行这个函数
+              // 成功执行callback 失败也执行callback(错误对象 new Error(错误信息))
+              // console.log(value);
+              value ? callback() : callback(new Error("没有勾选用户平台协议"));
+            },
           },
         ],
       },
     };
+  },
+  methods: {
+    login() {
+      //通过this.$refs.form.validate()来验证整个表单的有效性，或者通过
+      this.$refs.form.validate((isOK) => {
+        if (isOK) {
+          alert("校验通过");
+        }
+      });
+    },
   },
 };
 </script>
