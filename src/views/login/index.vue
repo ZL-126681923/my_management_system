@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-06-26 16:07:46
  * @LastEditors: 张良 1077167261@qq.com
- * @LastEditTime: 2024-06-27 11:18:24
+ * @LastEditTime: 2024-06-30 18:07:24
  * @FilePath: \My-admin\src\views\login\index.vue
 -->
 <template>
@@ -48,7 +48,7 @@
 </template>
 <script>
 import { login } from "@/api/user";
-
+import axios from "axios";
 export default {
   name: "Login",
   data() {
@@ -104,7 +104,8 @@ export default {
       //通过this.$refs.form.validate()来验证整个表单的有效性，或者通过
       this.$refs.form.validate((isOK) => {
         if (isOK) {
-          alert("校验通过");
+          //派发方法
+          this.$store.dispatch("user/login", this.loginForm);
         }
       });
     },
