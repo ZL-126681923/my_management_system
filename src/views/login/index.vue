@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-06-26 16:07:46
  * @LastEditors: 张良 1077167261@qq.com
- * @LastEditTime: 2024-06-30 18:07:24
+ * @LastEditTime: 2024-07-01 19:13:18
  * @FilePath: \My-admin\src\views\login\index.vue
 -->
 <template>
@@ -42,6 +42,7 @@
             >
           </el-form-item>
         </el-form>
+        <el-button @click="test()">测试</el-button>
       </el-card>
     </div>
   </div>
@@ -49,6 +50,7 @@
 <script>
 import { login } from "@/api/user";
 import axios from "axios";
+import request from "@/utils/request";
 export default {
   name: "Login",
   data() {
@@ -107,6 +109,16 @@ export default {
           //派发方法
           this.$store.dispatch("user/login", this.loginForm);
         }
+      });
+    },
+    test() {
+      request({
+        url: "/sys/login",
+        method: "post",
+        data: {
+          mobile: "13800000002",
+          password: "hm#qd@23!",
+        },
       });
     },
   },
