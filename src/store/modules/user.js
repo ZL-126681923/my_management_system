@@ -3,7 +3,8 @@
  1.点击登陆时调用login方法
  2.调用login时设置token(并同步到Cookies实现持久化缓存)
  3.使用Vue-cli解决跨域问题
- 4.封装axios实现拦截器功能(请求时注入token)
+ 4.封装axios实现请求拦截器功能(请求时注入token)与响应拦截器功能(解构数据以及错误处理)
+ 5.处理开发环境以及生产环境对应的api请求
  */
 import { getToken, setToken, removeToken } from '@/utils/auth'
 const state = {
