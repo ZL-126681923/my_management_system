@@ -1,9 +1,3 @@
-/*
- * @Date: 2024-06-26 16:07:46
- * @LastEditors: zl weixin_67448099@noreply.gitcode.com~
- * @LastEditTime: 2024-06-26 16:20:30
- * @FilePath: \vue-admin-template\src\main.js
- */
 import Vue from 'vue'
 
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets

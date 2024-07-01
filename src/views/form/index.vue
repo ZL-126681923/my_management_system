@@ -1,9 +1,3 @@
-<!--
- * @Date: 2024-06-26 16:07:46
- * @LastEditors: zl weixin_67448099@noreply.gitcode.com~
- * @LastEditTime: 2024-06-26 18:15:53
- * @FilePath: \vue-admin-template\src\views\form\index.vue
--->
 <template>
   <div class="app-container">
     <el-form ref="form" :model="form" label-width="120px">

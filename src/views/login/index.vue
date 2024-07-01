@@ -1,128 +1,90 @@
-<!--
- * @Date: 2024-06-26 16:07:46
- * @LastEditors: 张良 1077167261@qq.com
- * @LastEditTime: 2024-07-01 19:13:18
- * @FilePath: \My-admin\src\views\login\index.vue
--->
 <template>
   <div class="login-container">
-    <div class="logo">
-      <h2>欢迎来到人力资源管理系统</h2>
-    </div>
+    <div class="logo" />
     <div class="form">
-      <el-card shadow="hover" class="login-card">
-        <h1>登录</h1>
-        <!--登录表单
-           :model="loginForm":需要传入的数据
-           :rules="loginRules":需要传入的验证规则
-           prop="phone"需要验证的字段
-        -->
+      <h1>登录</h1>
+      <el-card shadow="never" class="login-card">
+        <!--登录表单-->
+        <!-- el-form > el-form-item > el-input -->
         <el-form ref="form" :model="loginForm" :rules="loginRules">
-          <el-form-item prop="phone">
-            <el-input
-              v-model="loginForm.phone"
-              placeholder="请输入手机号"
-            ></el-input>
+          <el-form-item prop="mobile">
+            <el-input v-model="loginForm.mobile" placeholder="请输入手机号" />
           </el-form-item>
           <el-form-item prop="password">
-            <el-input
-              v-model="loginForm.password"
-              placeholder="请输入密码"
-              show-password
-            ></el-input>
+            <el-input v-model="loginForm.password" show-password placeholder="请输入密码" />
           </el-form-item>
           <el-form-item prop="isAgree">
             <el-checkbox v-model="loginForm.isAgree">
-              已阅读平台用户使用协议
+              用户平台使用协议
             </el-checkbox>
           </el-form-item>
           <el-form-item>
-            <el-button style="width: 350px" type="primary" @click="login"
-              >登录</el-button
-            >
+            <el-button style="width:350px" type="primary" @click="login">登录</el-button>
           </el-form-item>
         </el-form>
-        <el-button @click="test()">测试</el-button>
       </el-card>
     </div>
   </div>
 </template>
 <script>
-import { login } from "@/api/user";
-import axios from "axios";
-import request from "@/utils/request";
 export default {
-  name: "Login",
+  name: 'Login',
   data() {
     return {
       loginForm: {
-        phone: "",
-        password: "",
-        isAgree: false,
+        mobile: process.env.NODE_ENV === 'development' ? '13800000002' : '',
+        password: process.env.NODE_ENV === 'development' ? 'hm#qd@23!' : '',
+        isAgree: process.env.NODE_ENV === 'development'
       },
       loginRules: {
-        phone: [
-          {
-            required: true,
-            message: "请输入手机号",
-            trigger: "blur",
-          },
-          {
-            pattern: /^1[3-9]\d{9}$/,
-            message: "请输入正确的手机号",
-            trigger: "blur",
-          },
-        ],
-        password: [
-          {
-            required: true,
-            message: "请输入密码",
-            trigger: "blur",
-          },
-          {
-            pattern: /^(?=.*[a-z])(?=.*[A-Z])[A-Za-z\d@#$%^&*?!]{6,10}$/,
-            message: "密码6~10位必须有大小写可以有特殊字符",
-            trigger: "blur",
-          },
-        ],
-        // required只能检查 null "" undefined
-        isAgree: [
-          {
-            validator: (rule, value, callback) => {
-              // rule规则
-              // value检查的数据 true/false
-              // callback 函数 执行这个函数
-              // 成功执行callback 失败也执行callback(错误对象 new Error(错误信息))
-              // console.log(value);
-              value ? callback() : callback(new Error("没有勾选用户平台协议"));
-            },
-          },
-        ],
-      },
-    };
+        mobile: [{
+          required: true,
+          message: '请输入手机号',
+          trigger: 'blur'
+        }, {
+          pattern: /^1[3-9]\d{9}$/,
+          message: '手机号格式不正确',
+          trigger: 'blur'
+
+        }],
+        password: [{
+          required: true,
+          message: '请输入密码',
+          trigger: 'blur'
+        }, {
+          min: 6,
+          max: 16,
+          message: '密码长度应该为6-16位之间',
+          trigger: 'blur'
+
+        }],
+        // required只能检测 null undefined ""
+        isAgree: [{
+          validator: (rule, value, callback) => {
+            // rule校验规则
+            // value 校验的值
+            // callback 函数 - promise resolve reject
+            // callback() callback(new Error(错误信息))
+            value ? callback() : callback(new Error('您必须勾选用户的使用协议'))
+          }
+        }]
+      }
+    }
   },
   methods: {
     login() {
-      //通过this.$refs.form.validate()来验证整个表单的有效性，或者通过
-      this.$refs.form.validate((isOK) => {
+      this.$refs.form.validate(async(isOK) => {
         if (isOK) {
-          //派发方法
-          this.$store.dispatch("user/login", this.loginForm);
+          await this.$store.dispatch('user/login', this.loginForm)
+          // Vuex 中的action 返回的promise
+          // 跳转主页
+          this.$router.push('/')
         }
-      });
-    },
-    test() {
-      request({
-        url: "/sys/login",
-        method: "post",
-        data: {
-          mobile: "13800000002",
-          password: "hm#qd@23!",
-        },
-      });
-    },
-  },
-};
+      })
+    }
+
+  }
+}
 </script>
 <style lang="scss">
 .login-container {
@@ -136,16 +98,9 @@ export default {
     border-top-right-radius: 60px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    // justify-content: center;
-    padding: 200px 100px;
-    h2 {
-      box-shadow: 0 0 5px #ccc;
-      color: #e2e1e4;
-    }
-    h2:hover {
-      cursor: pointer;
-    }
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0 100px;
     .icon {
       background: url(../../assets/common/logo.png) no-repeat 70px center /
         contain;
@@ -166,28 +121,24 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 0px 150px;
+    padding-left: 176px;
     .el-card {
       border: none;
       padding: 0;
     }
     h1 {
-      padding-left: 146px;
+      padding-left: 20px;
       font-size: 24px;
     }
     .el-input {
       width: 350px;
       height: 44px;
-      // margin-bottom: 20px;
-      .el-input__icon {
-        line-height: 44px;
-      }
       .el-input__inner {
         background: #f4f5fb;
       }
     }
     .el-checkbox {
-      color: #606266;
+      color:#606266;
     }
   }
 }

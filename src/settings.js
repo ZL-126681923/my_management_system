@@ -1,16 +1,16 @@
 module.exports = {
-// 网站的标题
-  title: '管理系统',
+
+  title: '人力资源后台管理系统',
 
   /**
    * @type {boolean} true | false
-   * @description 头部导航是否进行固定定位
+   * @description Whether fix the header
    */
-  fixedHeader: true,
+  fixedHeader: false,
 
   /**
    * @type {boolean} true | false
-   * @description 是否显示导航栏上方的logo
+   * @description Whether show the logo in sidebar
    */
-  sidebarLogo: true
+  sidebarLogo: false
 }
