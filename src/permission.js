@@ -1,3 +1,9 @@
+/*
+ * @Date: 2024-06-26 16:07:46
+ * @LastEditors: 张良 1077167261@qq.com
+ * @LastEditTime: 2024-07-02 17:52:21
+ * @FilePath: \My-admin\src\permission.js
+ */
 import router from '@/router'
 import nprogress from 'nprogress'
 import 'nprogress/nprogress.css'
@@ -7,7 +13,6 @@ import store from '@/store'
  *前置守卫
  *
 */
-
 const whiteList = ['/login', '/404']
 router.beforeEach((to, from, next) => {
   nprogress.start()
