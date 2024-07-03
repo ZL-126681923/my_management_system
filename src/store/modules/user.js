@@ -1,8 +1,8 @@
 /*
  * @Date: 2024-06-26 15:59:53
  * @LastEditors: 张良 1077167261@qq.com
- * @LastEditTime: 2024-07-01 23:31:29
- * @FilePath: \heimahr-02\src\store\modules\user.js
+ * @LastEditTime: 2024-07-03 18:32:05
+ * @FilePath: \My-admin\src\store\modules\user.js
  */
 /*
  用户接口 13800000002 hm#qd@23!
@@ -17,7 +17,7 @@ import { getToken, setToken, removeToken } from '@/utils/auth'
 import { login, getUserInfo } from '@/api/user'
 const state = {
   token: getToken(),// 从缓存中读取初始值
-  userInfo:{}//用户数据
+  userInfo: {}//用户数据
 }
 
 const mutations = {
@@ -31,7 +31,7 @@ const mutations = {
     state.token = null
     removeToken()
   },
-  setUserlnfo(state,userInfo){
+  setUserlnfo(state, userInfo) {
     state.userInfo = userInfo
   }
 }
@@ -39,7 +39,6 @@ const mutations = {
 const actions = {
   //登录接口 context上下文，传入参数
   async login(context, data) {
-    console.log(data)
     // todo: 调用登录接口
     const token = await login(data)
     // 返回一个token 123456
@@ -48,7 +47,8 @@ const actions = {
   // 获取用户的基本信息
   async getUserInfo(context) {
     const result = await getUserInfo()
-    context.commit('setUserlnfo',result)
+    console.log(result);
+    context.commit('setUserlnfo', result)
   }
 }
 

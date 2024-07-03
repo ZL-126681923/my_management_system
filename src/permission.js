@@ -1,7 +1,7 @@
 /*
  * @Date: 2024-06-26 16:07:46
  * @LastEditors: 张良 1077167261@qq.com
- * @LastEditTime: 2024-07-03 10:59:07
+ * @LastEditTime: 2024-07-03 18:31:04
  * @FilePath: \My-admin\src\permission.js
  */
 import router from '@/router'
@@ -26,7 +26,7 @@ router.beforeEach(async (to, from, next) => {
       nprogress.done()
     } else {
       if (!store.getters.userId) {
-         await store.dispatch('user/getUserInfo')
+        await store.dispatch('user/getUserInfo')
       }
       next() // 放过
     }
@@ -45,6 +45,6 @@ router.beforeEach(async (to, from, next) => {
  * 后置守卫
  * **/
 router.afterEach(() => {
-  console.log('123')
+
   nprogress.done()
 })
