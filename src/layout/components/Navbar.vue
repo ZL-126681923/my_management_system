@@ -32,17 +32,22 @@
           </a>
           <a
             target="_blank"
-            href="https://panjiachen.github.io/vue-element-admin-site/#/"
+            @click.prevent="updatePassword"          
           >
             <el-dropdown-item>修改密码</el-dropdown-item>
           </a>
           <!-- native修饰符给原生标签挂载事件 -->
           <el-dropdown-item @click.native="logout">
-            <span style="display: block">登出</span>
+            <span style="display: block">退出登录</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+    <!-- dialog 弹出层
+      sync可以接收到子组件传递的值-->
+     <el-dialog width="500px" title="修改密码" :visible.sync="showDialog">
+
+     </el-dialog>
   </div>
 </template>
 
@@ -57,6 +62,11 @@ export default {
     Breadcrumb,
     Hamburger,
   },
+  data(){
+    return {
+      showDialog : false
+    }
+  },
   computed: {
     ...mapGetters(["sidebar", "avatar", "name"]),
   },
@@ -68,6 +78,9 @@ export default {
       await this.$store.dispatch("user/logout");
       this.$router.push('/login')
     },
+    updatePassword(){
+      this.showDialog = true
+    }
   },
 };
 </script>
