@@ -1,7 +1,7 @@
 /*
  * @Date: 2024-06-26 15:59:53
  * @LastEditors: 张良 1077167261@qq.com
- * @LastEditTime: 2024-07-03 18:32:05
+ * @LastEditTime: 2024-07-08 12:48:04
  * @FilePath: \My-admin\src\store\modules\user.js
  */
 /*
@@ -26,7 +26,7 @@ const mutations = {
     // 同步到缓存
     setToken(token)
   },
-  removeToken() {
+  removeToken(state) {
     // 删除Vuex的token
     state.token = null
     removeToken()
@@ -49,6 +49,11 @@ const actions = {
     const result = await getUserInfo()
     console.log(result);
     context.commit('setUserlnfo', result)
+  },
+  // 退出登录接口
+  logout(context) {
+    context.commit('removeToken')//删除token
+    context.commit('setUserlnfo',{})//清空用户信息
   }
 }
 
