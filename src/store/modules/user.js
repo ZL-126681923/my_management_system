@@ -1,7 +1,7 @@
 /*
  * @Date: 2024-06-26 15:59:53
  * @LastEditors: 张良 1077167261@qq.com
- * @LastEditTime: 2024-07-08 12:48:04
+ * @LastEditTime: 2024-07-10 13:10:46
  * @FilePath: \My-admin\src\store\modules\user.js
  */
 /*
@@ -47,14 +47,18 @@ const actions = {
   // 获取用户的基本信息
   async getUserInfo(context) {
     const result = await getUserInfo()
-    console.log(result);
+    // 进行响应数据拦截
+    if (result.username.includes('黑马')) {
+      result.username = result.username.replace('黑马', 'xxx公司')
+    }
     context.commit('setUserlnfo', result)
   },
   // 退出登录接口
   logout(context) {
     context.commit('removeToken')//删除token
-    context.commit('setUserlnfo',{})//清空用户信息
+    context.commit('setUserlnfo', {})//清空用户信息
   }
+
 }
 
 export default {

@@ -43,10 +43,29 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
-    <!-- dialog 弹出层
-      sync可以接收到子组件传递的值-->
-     <el-dialog width="500px" title="修改密码" :visible.sync="showDialog">
-
+    <!-- 
+    dialog 弹出层
+      sync可以接收到子组件传递的值
+      label-width	表单域标签的宽度,作为 Form 直接子元素的 form-item 会继承该值。支持 auto
+    el-form 表单
+      ref指向表单元素 :model 数据 :rules 规则
+      -->
+     <el-dialog width="500px" title="修改密码" @close="btnClose" :visible.sync="showDialog">
+      <el-form ref="passFrom" label-width="100px" :model="passFrom" :rules="rules" >
+        <el-form-item label="旧密码" prop="oldPassword">
+          <el-input  show-password size="small" v-model="passFrom.oldPassword" />
+        </el-form-item>
+        <el-form-item label="新密码" prop="newPassword">
+          <el-input  show-password size="small" v-model="passFrom.newPassword"/>
+        </el-form-item>
+        <el-form-item label="重复密码" prop="confirmPassword">
+          <el-input  show-password size="small" v-model="passFrom.confirmPassword"/>
+        </el-form-item>
+        <el-form-item>
+          <el-button size="mini" type="primary" @click="btnOK" >确认修改</el-button>
+          <el-button size="mini" @click="btnClose">取消</el-button>
+        </el-form-item>
+      </el-form>
      </el-dialog>
   </div>
 </template>
@@ -56,7 +75,7 @@
 import { mapGetters } from "vuex";
 import Breadcrumb from "@/components/Breadcrumb";
 import Hamburger from "@/components/Hamburger";
-
+import { updatedPassword } from "@/api/user";
 export default {
   components: {
     Breadcrumb,
@@ -64,7 +83,32 @@ export default {
   },
   data(){
     return {
-      showDialog : false
+      showDialog : false,
+      passFrom:{
+        oldPassword: '', // 旧密码
+        newPassword: '', // 新密码
+        confirmPassword: '' // 确认密码字段
+      },
+      rules:{
+        oldPassword: [{required:true,message:'旧密码不能为空',trigger:'blur'}], 
+        newPassword: [{required:true,message:'新密码不能为空',trigger:'blur'},{
+          trigger:'blur',
+          min:6,
+          max:16,
+          message:'新密码应该在6~16位之间'
+        }],
+        confirmPassword: [{require:true,message:'重复密码不能为空',trigger:'blur'},{
+          trigger:'blur',
+          validator:(rule,value,callback)=>{
+            // 要用箭头函数不然this不会指向vue实例
+            if(this.passFrom.newPassword === value){
+              callback()
+            }else{
+              callback(new Error('两次输入的密码不一致'))
+            }
+          }
+        }]
+      }
     }
   },
   computed: {
@@ -80,6 +124,21 @@ export default {
     },
     updatePassword(){
       this.showDialog = true
+    },
+    btnOK(){
+      this.$refs.passFrom.validate(async isOK=>{
+        if(isOK){
+          //调用更新密码接口并且重置表单
+           await updatedPassword(this.passFrom)
+           this.$message.success('修改密码成功')
+           this.btnClose()
+        }
+      })
+    },
+    btnClose(){
+      // 重置表单并且关闭弹窗
+      this.$refs.passFrom.resetFields()
+      this.showDialog = false
     }
   },
 };

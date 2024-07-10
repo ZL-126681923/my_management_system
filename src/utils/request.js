@@ -1,4 +1,10 @@
 /*
+ * @Date: 2024-06-26 16:07:46
+ * @LastEditors: 张良 1077167261@qq.com
+ * @LastEditTime: 2024-07-10 13:06:37
+ * @FilePath: \My-admin\src\utils\request.js
+ */
+/*
   axios拦截器的封装
   1.完成了不同环境请求地址不同,以及请求延时
  */
