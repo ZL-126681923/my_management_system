@@ -1,16 +1,21 @@
 <template>
   <div class="container">
     <div class="app-container">
-      <el-tree default-expand-all :data="depts" :props="defaultProps">
+      <el-tree default-expand-all :expand-on-click-node="false" :data="depts" :props="defaultProps">
         <!-- 节点结构 -->
         <!-- v-slot="{ node, data }" 只能作用在template -->
         <template v-slot="{ data }">
-          <el-row style="width:100%;height:40px" type="flex" justify="space-between" align="middle">
+          <el-row
+            style="width: 100%; height: 40px"
+            type="flex"
+            justify="space-between"
+            align="middle"
+          >
             <el-col>{{ data.name }}</el-col>
             <el-col :span="4">
               <span class="tree-manager">{{ data.managerName }}</span>
               <!-- $event 实参 表示类型 -->
-              <el-dropdown >
+              <el-dropdown @command="operateDept">
                 <!-- 显示区域内容 -->
                 <span class="el-dropdown-link">
                   操作<i class="el-icon-arrow-down el-icon--right" />
@@ -25,30 +30,53 @@
             </el-col>
           </el-row>
         </template>
-  </el-tree>
+      </el-tree>
     </div>
+    <add-dept  :show-dialog.sync="showDialog"  />
+    <!-- 这里我们同样使用了sync修饰符，可以监听子组件传过来的 update:属性名的事件，直接将父组件的值进行修改 -->
   </div>
 </template>
 <script>
+import { getDepartment } from "@/api/department";
+import { transListToTreeData } from "@/utils/index";
+import AddDept from './components/add-dept'
 export default {
-  name: 'Department',
-  data(){
-    return{
-      depts:[{
-        name:'xxx有限公司',
-        children:[
-        {name:'总裁办',managerName:'张三'},
-        {name:'行政部',managerName:'李四'},
-        {name:'财务部',managerName:'王五'},
-        ]
-      }],
-      defaultProps:{
-        label:'name',
-        children:'children'
+  name: "Department",
+  components:{
+    AddDept
+  },
+  data() {
+    return {
+      depts: [],
+      defaultProps: {
+        label: "name",
+        children: "children",
+      },
+      showDialog:false
+    };
+  },
+  created() {
+    this.getDepartment();
+  },
+  methods: {
+    async getDepartment() {
+      let result = await getDepartment();
+      result.map((item) => {
+        if (item.managerName.includes("黑马")) {
+          item.managerName = item.managerName.replace("黑马", "xxx公司");
+        }
+        return item;
+      });
+      // console.log(result);
+      this.depts = transListToTreeData(result, 0);
+    },
+    operateDept(type){
+      if(type == 'add'){
+        this.showDialog=true
       }
     }
-  }
-}
+  },
+};
 </script>
 <style scoped>
 .app-container {
@@ -58,6 +86,6 @@ export default {
 .tree-manager {
   width: 50px;
   display: inline-block;
-  margin: 10px;
+  margin: 50px;
 }
 </style>
