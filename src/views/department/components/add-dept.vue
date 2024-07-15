@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-07-12 15:09:08
  * @LastEditors: 张良 1077167261@qq.com
- * @LastEditTime: 2024-07-15 15:24:25
+ * @LastEditTime: 2024-07-15 20:23:15
  * @FilePath: \My-admin\src\views\department\components\add-dept.vue
 -->
 <template>
@@ -54,8 +54,8 @@
         <!-- 按钮 -->
         <el-row type="flex" justify="center">
           <el-col :span="12">
-            <el-button size="mini" type="primary">确定</el-button>
-            <el-button size="mini">取消</el-button>
+            <el-button size="mini" type="primary" @click="btnOK">确定</el-button>
+            <el-button size="mini" @click='close'>取消</el-button>
           </el-col>
         </el-row>
       </el-form-item>
@@ -63,7 +63,7 @@
   </el-dialog>
 </template>
 <script>
-import { getDepartment, getManagerList } from "@/api/department";
+import { getDepartment, getManagerList,addDepartment } from "@/api/department";
 export default {
   name: "AddDept",
   props: {
@@ -71,10 +71,10 @@ export default {
       type: Boolean,
       default: false,
     },
-    currentNodeId:{
+    currentNodeId: {
       type: Number,
-      default:null
-    }
+      default: null,
+    },
   },
   data() {
     return {
@@ -154,10 +154,24 @@ export default {
   },
   methods: {
     close() {
-      this.$emit("update:showDialog", false);
+      this.$refs.addDept.resetFields() // 重置表单
+      this.$emit("update:showDialog", false);//关闭弹窗
     },
     async getManagerList() {
       this.managerList = await getManagerList();
+    },
+    // 点击确定时调用
+    btnOK() {
+      this.$refs.addDept.validate(async (isOK) => {
+        if (isOK) {
+          await addDepartment({ ...this.formData, pid: this.currentNodeId });
+          // 通知父组件更新
+          this.$emit("updateDepartment");
+          // 提示消息
+          this.$message.success(`新增部门成功`);
+          this.close();
+        }
+      });
     },
   },
 };

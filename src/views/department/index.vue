@@ -32,7 +32,7 @@
         </template>
       </el-tree>
     </div>
-    <add-dept  :show-dialog.sync="showDialog"  :currentNodeId="currentNodeId"/>
+    <add-dept  :show-dialog.sync="showDialog"  :currentNodeId="currentNodeId" @updateDepartment="getDepartment"/>
     <!-- 这里我们同样使用了sync修饰符，可以监听子组件传过来的 update:属性名的事件，直接将父组件的值进行修改 -->
   </div>
 </template>
