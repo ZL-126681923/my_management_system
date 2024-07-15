@@ -1,7 +1,7 @@
 /*
  * @Date: 2024-06-26 16:07:46
  * @LastEditors: 张良 1077167261@qq.com
- * @LastEditTime: 2024-07-10 13:06:37
+ * @LastEditTime: 2024-07-15 16:46:19
  * @FilePath: \My-admin\src\utils\request.js
  */
 /*
@@ -35,7 +35,15 @@ service.interceptors.response.use((response) => {
   // axios默认包裹了data
   const { data, message, success } = response.data
   if (success) {
+    // 统一拦截数据进行修改
+    if (Array.isArray(data)) {
+      data.forEach(item => {
+        item.managerName = item.managerName?.replace("黑马", "xx公司");
+        item.username = item.username?.replace('黑马', 'xx公司')
+      });
+    }
     return data
+
   } else {
     Message({ type: 'error', message })
     return Promise.reject(new Error(message))

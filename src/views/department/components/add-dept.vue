@@ -30,6 +30,14 @@
           style="width: 80%"
           size="mini"
         >
+          <!-- 循环渲染负责人数据 label表示显示的字段,value表示存储字段 -->
+          <el-option
+            v-for="item in managerList"
+            :key="item.id"
+            :label="item.username"
+            :value="item.id"
+          >
+          </el-option>
         </el-select>
       </el-form-item>
       <el-form-item prop="introduce" label="部门介绍">
@@ -55,7 +63,7 @@
   </el-dialog>
 </template>
 <script>
-import { getDepartment } from "@/api/department";
+import { getDepartment, getManagerList } from "@/api/department";
 export default {
   name: "AddDept",
   props: {
@@ -63,9 +71,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    currentNodeId:{
+      type: Number,
+      default:null
+    }
   },
   data() {
     return {
+      managerList: [], // 存储负责人列表
       formData: {
         code: "", // 部门编码
         introduce: "", // 部门介绍
@@ -81,20 +94,21 @@ export default {
             max: 10,
             message: "部门编码的长度为2-10个字符",
             trigger: "blur",
-          },  {
-            trigger: 'blur',
+          },
+          {
+            trigger: "blur",
             // 自定义校验模式
-            validator: async(rule, value, callback) => {
+            validator: async (rule, value, callback) => {
               // value就是输入的编码
-              let result = await getDepartment()
+              let result = await getDepartment();
               // result数组中是否存在 value值
-              if (result.some(item => item.code === value)) {
-                callback(new Error('部门中已经有该编码了'))
+              if (result.some((item) => item.code === value)) {
+                callback(new Error("部门中已经有该编码了"));
               } else {
-                callback()
+                callback();
               }
-            }
-}
+            },
+          },
         ], // 部门编码
         introduce: [
           { required: true, message: "部门介绍不能为空", trigger: "blur" },
@@ -135,9 +149,15 @@ export default {
       },
     };
   },
+  created() {
+    this.getManagerList();
+  },
   methods: {
     close() {
       this.$emit("update:showDialog", false);
+    },
+    async getManagerList() {
+      this.managerList = await getManagerList();
     },
   },
 };

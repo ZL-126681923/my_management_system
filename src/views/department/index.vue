@@ -15,7 +15,7 @@
             <el-col :span="4">
               <span class="tree-manager">{{ data.managerName }}</span>
               <!-- $event 实参 表示类型 -->
-              <el-dropdown @command="operateDept">
+              <el-dropdown @command="operateDept($event,data.id)">
                 <!-- 显示区域内容 -->
                 <span class="el-dropdown-link">
                   操作<i class="el-icon-arrow-down el-icon--right" />
@@ -32,7 +32,7 @@
         </template>
       </el-tree>
     </div>
-    <add-dept  :show-dialog.sync="showDialog"  />
+    <add-dept  :show-dialog.sync="showDialog"  :currentNodeId="currentNodeId"/>
     <!-- 这里我们同样使用了sync修饰符，可以监听子组件传过来的 update:属性名的事件，直接将父组件的值进行修改 -->
   </div>
 </template>
@@ -47,6 +47,7 @@ export default {
   },
   data() {
     return {
+      currentNodeId:null,//存储当前点击的id
       depts: [],
       defaultProps: {
         label: "name",
@@ -61,18 +62,12 @@ export default {
   methods: {
     async getDepartment() {
       let result = await getDepartment();
-      result.map((item) => {
-        if (item.managerName.includes("黑马")) {
-          item.managerName = item.managerName.replace("黑马", "xxx公司");
-        }
-        return item;
-      });
-      // console.log(result);
       this.depts = transListToTreeData(result, 0);
     },
-    operateDept(type){
+    operateDept(type,id){
       if(type == 'add'){
         this.showDialog=true
+        this.currentNodeId=id
       }
     }
   },
@@ -86,6 +81,6 @@ export default {
 .tree-manager {
   width: 50px;
   display: inline-block;
-  margin: 50px;
+  margin-right: 44px;
 }
 </style>
