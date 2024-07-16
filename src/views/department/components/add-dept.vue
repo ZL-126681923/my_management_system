@@ -54,8 +54,10 @@
         <!-- 按钮 -->
         <el-row type="flex" justify="center">
           <el-col :span="12">
-            <el-button size="mini" type="primary" @click="btnOK">确定</el-button>
-            <el-button size="mini" @click='close'>取消</el-button>
+            <el-button size="mini" type="primary" @click="btnOK"
+              >确定</el-button
+            >
+            <el-button size="mini" @click="close">取消</el-button>
           </el-col>
         </el-row>
       </el-form-item>
@@ -63,7 +65,12 @@
   </el-dialog>
 </template>
 <script>
-import { getDepartment, getManagerList,addDepartment } from "@/api/department";
+import {
+  getDepartment,
+  getManagerList,
+  addDepartment,
+  getDepartmentDetail,
+} from "@/api/department";
 export default {
   name: "AddDept",
   props: {
@@ -154,8 +161,8 @@ export default {
   },
   methods: {
     close() {
-      this.$refs.addDept.resetFields() // 重置表单
-      this.$emit("update:showDialog", false);//关闭弹窗
+      this.$refs.addDept.resetFields(); // 重置表单
+      this.$emit("update:showDialog", false); //关闭弹窗
     },
     async getManagerList() {
       this.managerList = await getManagerList();
@@ -172,6 +179,9 @@ export default {
           this.close();
         }
       });
+    },
+     async getDepartmentDetail() {
+     this.formData= await getDepartmentDetail(this.currentNodeId);
     },
   },
 };
