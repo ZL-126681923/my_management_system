@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-07-10 13:46:26
  * @LastEditors: 张良 1077167261@qq.com
- * @LastEditTime: 2024-07-16 18:47:10
+ * @LastEditTime: 2024-07-16 22:27:00
  * @FilePath: \My-admin\src\views\department\index.vue
 -->
 <template>
@@ -53,7 +53,7 @@
   </div>
 </template>
 <script>
-import { getDepartment } from "@/api/department";
+import { getDepartment, delDepartment } from "@/api/department";
 import { transListToTreeData } from "@/utils/index";
 import AddDept from "./components/add-dept";
 export default {
@@ -98,6 +98,19 @@ export default {
           this.$refs.addDept.getDepartmentDetail(); // this.$refs.addDept等同于子组件的this
         });
       }
+      else{
+        // 删除部门
+        this.$confirm('您确认要删除该部门吗','提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async() => {
+          await delDepartment(id)
+          // 提示消息
+          this.$message.success('删除部门成功')
+          this.getDepartment()
+      })
+    }
     },
   },
 };

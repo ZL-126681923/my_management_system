@@ -1,7 +1,7 @@
 /*
  * @Date: 2024-07-11 17:11:57
  * @LastEditors: 张良 1077167261@qq.com
- * @LastEditTime: 2024-07-16 18:49:54
+ * @LastEditTime: 2024-07-16 22:25:16
  * @FilePath: \My-admin\src\api\department.js
  */
 import request from '@/utils/request'
@@ -19,7 +19,8 @@ export function getManagerList() {
 }
 /**
 * 新增组织
-* ***/
+*
+ ***/
 export function addDepartment(data) {
   return request({
     method: 'post',
@@ -33,6 +34,26 @@ export function addDepartment(data) {
  * ***/
 export function getDepartmentDetail(id) {
   return request({
+    url: `/company/department/${id}`
+  })
+}
+/** *
+ * 更新部门
+ * ***/
+export function updateDepartment(data) {
+  return request({
+    method: 'put',
+    url: `/company/department/${data.id}`,
+    data
+  })
+}
+/**
+ * 删除部门
+ *
+*/
+export function delDepartment(id) {
+  return request({
+    method: 'delete',
     url: `/company/department/${id}`
   })
 }
