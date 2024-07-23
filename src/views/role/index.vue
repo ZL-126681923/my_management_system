@@ -1,14 +1,20 @@
 <!--
  * @Date: 2024-07-10 13:46:26
  * @LastEditors: 张良 1077167261@qq.com
- * @LastEditTime: 2024-07-23 20:09:14
+ * @LastEditTime: 2024-07-23 21:53:15
  * @FilePath: \My-admin\src\views\role\index.vue
 -->
 <template>
   <div class="container">
     <div class="app-container">
       <div class="role-operate">
-        <el-button size="mini" type="primary" class="btn" @click="showDialog=true">新增角色</el-button>
+        <el-button
+          size="mini"
+          type="primary"
+          class="btn"
+          @click="showDialog = true"
+          >新增角色</el-button
+        >
       </div>
       <!-- 放置table组件 -->
       <el-table :data="list" border highlight-current-row>
@@ -49,19 +55,33 @@
     <!-- 添加用户弹层 -->
     <el-dialog width="500px" title="新增角色" :visible.sync="showDialog">
       <!-- 表单内容 -->
-      <el-form label-width="120px">
-        <el-form-item label="角色名称">
-          <el-input style="width: 300px" size="mini" />
+      <el-form
+        label-width="120px"
+        ref="roleFrom"
+        :model="roleForm"
+        :rules="rules"
+      >
+        <el-form-item prop="name" label="角色名称">
+          <el-input v-model="roleForm.name" style="width: 300px" size="mini" />
         </el-form-item>
         <el-form-item label="启用">
-          <el-switch size="mini" />
+          <!-- 设置active-value和inactive-value属性，接受Boolean, String或Number类型的值。 -->
+          <el-switch
+            size="mini"
+            v-model="roleForm.state"
+            :active-value="1"
+            :inactive-value="0"
+            active-color="red"
+            inactive-color="pink"
+          />
         </el-form-item>
-        <el-form-item label="角色描述">
+        <el-form-item label="角色描述" prop="description">
           <el-input
             type="textarea"
             :rows="3"
             style="width: 300px"
             size="mini"
+            v-model="roleForm.description"
           />
         </el-form-item>
         <el-form-item>
@@ -83,11 +103,24 @@ export default {
   data() {
     return {
       list: [],
-      showDialog:false,
+      showDialog: false,
       pageParams: {
         page: 1, // 第几页
         pagesize: 5, // 每页多少条
         total: 0, //请求条数
+      },
+      roleForm: {
+        name: "",
+        description: "",
+        state: 0, // 默认未1启用 关闭 0 打开1
+      },
+      rules: {
+        name: [
+          { required: true, message: "角色名称不能为空", trigger: "blur" },
+        ],
+        description: [
+          { required: true, message: "角色描述不能为空", trigger: "blur" },
+        ],
       },
     };
   },
