@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-07-10 13:46:26
  * @LastEditors: 张良 1077167261@qq.com
- * @LastEditTime: 2024-07-23 21:53:15
+ * @LastEditTime: 2024-07-24 11:44:58
  * @FilePath: \My-admin\src\views\role\index.vue
 -->
 <template>
@@ -49,23 +49,31 @@
           :total="pageParams.total"
           layout="prev, pager, next"
           @current-change="changePage"
+          background
         />
       </el-row>
     </div>
-    <!-- 添加用户弹层 -->
-    <el-dialog width="500px" title="新增角色" :visible.sync="showDialog">
+    <!-- 添加用户弹层  @close关闭时的自定义事件-->
+    <el-dialog
+      width="500px"
+      title="新增角色"
+      :visible.sync="showDialog"
+      @close="btnCancel()"
+    >
       <!-- 表单内容 -->
       <el-form
         label-width="120px"
-        ref="roleFrom"
+        ref="roleForm"
         :model="roleForm"
         :rules="rules"
       >
         <el-form-item prop="name" label="角色名称">
           <el-input v-model="roleForm.name" style="width: 300px" size="mini" />
         </el-form-item>
-        <el-form-item label="启用">
-          <!-- 设置active-value和inactive-value属性，接受Boolean, String或Number类型的值。 -->
+        <el-form-item label="启用" prop="state">
+          <!-- 设置active-value和inactive-value属性,表示切换时双向绑定的值
+              prop属性如果不校验表单则不需要,但如果要重置表单的话也还是需要的
+            -->
           <el-switch
             size="mini"
             v-model="roleForm.state"
@@ -87,8 +95,10 @@
         <el-form-item>
           <el-row type="flex" justify="center">
             <el-col :span="12">
-              <el-button type="primary" size="mini">确定</el-button>
-              <el-button size="mini">取消</el-button>
+              <el-button type="primary" size="mini" @click="btnOK()"
+                >确定</el-button
+              >
+              <el-button size="mini" @click="btnCancel()">取消</el-button>
             </el-col>
           </el-row>
         </el-form-item>
@@ -97,7 +107,7 @@
   </div>
 </template>
 <script>
-import { getRoleList } from "@/api/role";
+import { getRoleList, addRole } from "@/api/role";
 export default {
   name: "Role",
   data() {
@@ -137,6 +147,21 @@ export default {
     changePage(newPage) {
       this.pageParams.page = newPage; // 赋值当前页码
       this.getRoleList();
+    },
+    // 确定与取消按钮
+    btnOK() {
+      this.$refs.roleForm.validate(async (isOK) => {
+        if (isOK) {
+          await addRole(this.roleForm);
+          this.$message.success("新增角色成功");
+          this.getRoleList();
+          this.btnCancel();
+        }
+      });
+    },
+    btnCancel() {
+      this.$refs.roleForm.resetFields(); // 重置表单数据
+      this.showDialog = false; // 关闭弹层
     },
   },
 };
