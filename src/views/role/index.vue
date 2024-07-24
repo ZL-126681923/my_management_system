@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-07-10 13:46:26
  * @LastEditors: 张良 1077167261@qq.com
- * @LastEditTime: 2024-07-24 15:03:52
+ * @LastEditTime: 2024-07-24 15:28:11
  * @FilePath: \My-admin\src\views\role\index.vue
 -->
 <template>
@@ -21,7 +21,11 @@
         <!-- 放置列-角色 -->
         <el-table-column prop="name" align="center" width="200" label="角色">
           <template v-slot="{ row }">
-            <el-input v-if="row.isEdit" size="mini"></el-input>
+            <el-input
+              v-if="row.isEdit"
+              size="mini"
+              v-model="row.editRow.name"
+            ></el-input>
             <span v-else>{{ row.name }}</span>
           </template>
         </el-table-column>
@@ -29,7 +33,12 @@
         <el-table-column prop="state" align="center" width="200" label="启用">
           <!-- 自定义列结构 -->
           <template v-slot="{ row }">
-            <el-switch v-if="row.isEdit"></el-switch>
+            <el-switch
+              v-if="row.isEdit"
+              v-model="row.editRow.state"
+              active-value="1"
+              inactive-value="0"
+            ></el-switch>
             <span v-else>
               {{
                 row.state === 1 ? "已启用" : row.state === 0 ? "未启用" : "无"
@@ -40,7 +49,12 @@
         <!-- 描述 -->
         <el-table-column prop="description" align="center" label="描述">
           <template v-slot="{ row }">
-            <el-input v-if="row.isEdit" type="textarea" />
+            <el-input
+              size="mini"
+              v-if="row.isEdit"
+              type="textarea"
+              v-model="row.editRow.description"
+            />
             <span v-else>{{ row.description }}</span>
           </template>
         </el-table-column>
@@ -172,6 +186,12 @@ export default {
         // 添加的动态属性 不具备响应式特点
         // this.$set(目标对象, 属性名称, 初始值) 可以针对目标对象 添加的属性 添加响应式
         this.$set(item, "isEdit", false);
+        // 缓存数据
+        this.$set(item, "editRow", {
+          name: item.name,
+          state: item.state,
+          description: item.description,
+        });
       });
     },
     // 切换分页时 请求新的数据
@@ -197,6 +217,10 @@ export default {
     // 点击编辑行
     btnEditRow(row) {
       row.isEdit = true; // 改变行的编辑状态
+      // 更新缓存数据
+      row.editRow.name = row.name;
+      row.editRow.state = row.state;
+      row.editRow.description = row.description;
     },
   },
 };
