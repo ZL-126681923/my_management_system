@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-07-10 13:46:26
  * @LastEditors: 张良 1077167261@qq.com
- * @LastEditTime: 2024-07-24 15:28:11
+ * @LastEditTime: 2024-07-25 01:56:43
  * @FilePath: \My-admin\src\views\role\index.vue
 -->
 <template>
@@ -33,11 +33,12 @@
         <el-table-column prop="state" align="center" width="200" label="启用">
           <!-- 自定义列结构 -->
           <template v-slot="{ row }">
+            <!-- 绑定:active-value 1才是数字否则就是字符串 -->
             <el-switch
               v-if="row.isEdit"
               v-model="row.editRow.state"
-              active-value="1"
-              inactive-value="0"
+              :active-value="1"
+              :inactive-value="0"
             ></el-switch>
             <span v-else>
               {{
@@ -63,8 +64,12 @@
           <template v-slot="{ row }">
             <template v-if="row.isEdit">
               <!-- 编辑状态 -->
-              <el-button type="primary" size="mini">确定</el-button>
-              <el-button size="mini">取消</el-button>
+              <el-button type="primary" size="mini" @click="btnEditOK(row)"
+                >确定</el-button
+              >
+              <el-button size="mini" @click="row.isEdit = false"
+                >取消</el-button
+              >
             </template>
             <template v-else>
               <!-- 非编辑状态 -->
@@ -72,7 +77,23 @@
               <el-button size="mini" type="text" @click="btnEditRow(row)"
                 >编辑</el-button
               >
-              <el-button size="mini" type="text">删除</el-button>
+              <!--文档有问题onConfirm才是点击按钮时触发-->
+              <el-popconfirm
+                confirm-button-text="确定"
+                cancel-button-text="取消"
+                icon="el-icon-info"
+                icon-color="red"
+                title="确定删除该角色吗？"
+                @onConfirm="confirmDel(row.id)"
+              >
+                <el-button
+                  slot="reference"
+                  style="margin-left: 10px"
+                  size="mini"
+                  type="text"
+                  >删除</el-button
+                >
+              </el-popconfirm>
             </template>
           </template>
         </el-table-column>
@@ -144,7 +165,7 @@
   </div>
 </template>
 <script>
-import { getRoleList, addRole } from "@/api/role";
+import { getRoleList, addRole, updateRole, delRole } from "@/api/role";
 export default {
   name: "Role",
   data() {
@@ -221,6 +242,32 @@ export default {
       row.editRow.name = row.name;
       row.editRow.state = row.state;
       row.editRow.description = row.description;
+    },
+    // 点击确定时触发
+    async btnEditOK(row) {
+      if (row.editRow.name && row.editRow.description) {
+        // 下一步操作
+        await updateRole({ ...row.editRow, id: row.id });
+        // 更新成功
+        this.$message.success("更新角色成功");
+        // 更新显示数据  退出编辑状态
+        // row.name = row.editRow.name // eslint的一校验 误判
+        // Object.assign(target, source)
+        Object.assign(row, {
+          ...row.editRow,
+          isEdit: false, // 退出编辑模式
+        }); // 规避eslint的误判
+      } else {
+        this.$message.warning("角色和描述不能为空");
+      }
+    },
+    // 确认删除角色
+    async confirmDel(id) {
+      await delRole(id); // 后端删除
+      this.$message.success("删除角色成功");
+      // 删除的如果是最后一个
+      if (this.list.length === 1) this.pageParams.page--;
+      this.getRoleList();
     },
   },
 };
