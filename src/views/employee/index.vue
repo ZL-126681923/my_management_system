@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-07-10 13:46:26
  * @LastEditors: 张良 1077167261@qq.com
- * @LastEditTime: 2024-07-25 03:38:48
+ * @LastEditTime: 2024-07-27 21:30:43
  * @FilePath: \My-admin\src\views\employee\index.vue
 -->
 <template>
@@ -17,12 +17,15 @@
         />
         <!-- 树形组件 -->
         <el-tree
+          ref="deptTree"
+          node-key="id"
           :data="depts"
           :props="defaultProps"
           default-expand-all
           :expand-on-click-node="false"
           highlight-current
-  />
+          @current-change="selectNode"
+        />
       </div>
       <div class="right">
         <el-row class="opeate-tools" type="flex" justify="end">
@@ -38,8 +41,8 @@
 </template>
 
 <script>
-import{getDepartment}from '@/api/department'
-import{transListToTreeData}from '@/utils'
+import { getDepartment } from "@/api/department";
+import { transListToTreeData } from "@/utils";
 export default {
   name: "Employee",
   data() {
@@ -49,18 +52,32 @@ export default {
         label: "name",
         children: "children",
       },
+      // 存储查询参数
+      queryParams: {
+        departmentId: null,
+      },
     };
   },
   created() {
-    this.getDepartment()
+    this.getDepartment();
   },
   methods: {
     async getDepartment() {
       // 递归方法 将列表转化成树形
       // let result = await getDepartment()
-      this.depts = transListToTreeData(await getDepartment(), 0)
-    }
-  }
+      this.depts = transListToTreeData(await getDepartment(), 0);
+      this.queryParams.departmentId = this.depts[0].id;
+      // 设置选中节点
+      // 树组件渲染是异步的 等到更新完毕
+      this.$nextTick(() => {
+        // 此时意味着树渲染完毕
+        this.$refs.deptTree.setCurrentKey(this.queryParams.departmentId);
+      });
+    },
+    selectNode(node) {
+      this.queryParams.departmentId = node.id;
+    },
+  },
 };
 </script>
 
