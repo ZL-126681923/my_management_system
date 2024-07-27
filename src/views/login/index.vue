@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <div class="logo-left">
-      <el-button type="success" disabled round>人力资源管理系统</el-button>
+      <el-button type="warning" disabled round>人力资源管理系统</el-button>
     </div>
     <div class="logo-right">
       <div class="form">
@@ -112,6 +112,7 @@ export default {
     flex: 3;
     background: url(../../assets/common/background.jpg) no-repeat center / cover;
     border-top-left-radius: 60px;
+    border-bottom-left-radius: 60px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -122,6 +123,7 @@ export default {
     background: rgba(38, 72, 176) url(../../assets/common/login_back.png)
       no-repeat center / cover;
     border-top-right-radius: 60px;
+    border-bottom-right-radius: 60px;
     display: flex;
     flex-direction: column;
     align-items: center;

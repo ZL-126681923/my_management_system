@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-07-10 13:46:26
  * @LastEditors: 张良 1077167261@qq.com
- * @LastEditTime: 2024-07-27 21:46:20
+ * @LastEditTime: 2024-07-27 23:24:16
  * @FilePath: \My-admin\src\views\employee\index.vue
 -->
 <template>
@@ -34,14 +34,14 @@
           <el-button size="mini">excel导出</el-button>
         </el-row>
         <!-- 表格组件 -->
-        <el-table>
-          <el-table-column align="center" label="头像" />
-          <el-table-column label="姓名" />
-          <el-table-column label="手机号" sortable />
-          <el-table-column label="工号" sortable />
-          <el-table-column label="聘用形式" />
-          <el-table-column label="部门" />
-          <el-table-column label="入职时间" sortable />
+        <el-table :data="list" border>
+          <el-table-column prop="staffPhoto" align="center" label="头像" />
+          <el-table-column prop="username" label="姓名" />
+          <el-table-column prop="mobile" label="手机号" sortable />
+          <el-table-column prop="workNumber" label="工号" sortable />
+          <el-table-column prop="formOfEmployment" label="聘用形式" />
+          <el-table-column prop="departmentName" label="部门" />
+          <el-table-column prop="timeOfEntry" label="入职时间" sortable />
           <el-table-column label="操作" width="280px">
             <template>
               <el-button size="mini" type="text">查看</el-button>
@@ -62,6 +62,7 @@
 <script>
 import { getDepartment } from "@/api/department";
 import { transListToTreeData } from "@/utils";
+import { getEmployeeList } from "@/api/employees";
 export default {
   name: "Employee",
   data() {
@@ -75,6 +76,7 @@ export default {
       queryParams: {
         departmentId: null,
       },
+      list: [], //接收员工数据
     };
   },
   created() {
@@ -92,9 +94,23 @@ export default {
         // 此时意味着树渲染完毕
         this.$refs.deptTree.setCurrentKey(this.queryParams.departmentId);
       });
+      // 这个时候参数 记录了id可以调用获取员工数据的方法了
+      this.getEmployeeList();
     },
+    // 获取员工列表的方法
+    async getEmployeeList() {
+      const { rows } = await getEmployeeList(this.queryParams);
+      rows.forEach((item) => {
+        if(item.username.includes('黑马')){
+          item.username = item.username.replace('黑马','xx公司')
+        }
+      });
+      this.list = rows;
+    },
+    // 点击节点时得到当前节点id并且重新赋值
     selectNode(node) {
       this.queryParams.departmentId = node.id;
+      this.getEmployeeList();
     },
   },
 };
