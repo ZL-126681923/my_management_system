@@ -49,7 +49,7 @@ const actions = {
     const result = await getUserInfo()
     // 进行响应数据拦截
     if (result.username.includes('黑马')) {
-      result.username = result.username.replace('黑马', 'xxx公司')
+      result.username = result.username.replace('黑马', 'xx公司')
     }
     context.commit('setUserlnfo', result)
   },

@@ -12,9 +12,9 @@
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <!-- 头像 -->
-          <img v-if="avatar" :src="avatar" class="user-avatar" />
+          <img v-if="avatar" src="@/assets/common/avatar.jpg" alt="头像" class="user-avatar" />
           <!-- name?.charAt(0)使用链式询问避免报错  -->
-          <span v-else class="username">{{ name?.charAt(0) }}</span>
+          <span v-else class="username">{{ name?.charAt(4) }}</span>
           <!-- 用户名 -->
           <span class="name">{{ name }}</span>
           <!-- 图标 -->
@@ -206,8 +206,8 @@ export default {
         align-items: center;
         .user-avatar {
           cursor: pointer;
-          width: 30px;
-          height: 30px;
+          width: 40px;
+          height: 34px;
           border-radius: 50%;
         }
         .username {
@@ -219,10 +219,11 @@ export default {
           background: #04c9be;
           color: #fff;
           margin-right: 4px;
+          
         }
         .name {
           //  用户名称距离右侧距离
-          margin-right: 10px;
+          margin: 0px 10px;
           font-size: 16px;
         }
         .el-icon-setting {
