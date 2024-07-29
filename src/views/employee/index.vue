@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-07-10 13:46:26
  * @LastEditors: 张良 1077167261@qq.com
- * @LastEditTime: 2024-07-29 16:57:53
+ * @LastEditTime: 2024-07-30 01:55:08
  * @FilePath: \My-admin\src\views\employee\index.vue
 -->
 <template>
@@ -42,7 +42,11 @@
                 style="width: 40px; height: 40px; border-radius: 50%"
                 src="@/assets/common/avatar.jpg"
               />
-              <span v-else class="username">{{ row.username?.charAt(4) }}</span>
+              <span v-else class="username">{{
+                row.username.charAt(4)
+                  ? row.username.charAt(4)
+                  : row.username.charAt(0)
+              }}</span>
             </template>
           </el-table-column>
           <el-table-column prop="username" label="姓名" />
@@ -67,7 +71,14 @@
         </el-table>
         <!-- 分页 -->
         <el-row style="height: 60px" align="middle" type="flex" justify="end">
-          <el-pagination layout="total,prev, pager, next" :total="1000" />
+          <el-pagination
+            layout="total,prev, pager, next"
+            :total="total"
+            :current-page="queryParams.page"
+            :page-size="queryParams.pagesize"
+            @current-change="changePage"
+            background
+          />
         </el-row>
       </div>
     </div>
@@ -90,7 +101,10 @@ export default {
       // 存储查询参数
       queryParams: {
         departmentId: null,
+        page: 1, //当前页码
+        pagesize: 10, //每页条数
       },
+      total: 0, //记录员工总数
       list: [], //接收员工数据
     };
   },
@@ -114,18 +128,25 @@ export default {
     },
     // 获取员工列表的方法
     async getEmployeeList() {
-      const { rows } = await getEmployeeList(this.queryParams);
+      const { rows, total } = await getEmployeeList(this.queryParams);
       rows.forEach((item) => {
         if (item.username.includes("黑马")) {
           item.username = item.username.replace("黑马", "xx公司");
         }
       });
       this.list = rows;
+      this.total = total;
     },
-    // 点击节点时得到当前节点id并且重新赋值
+    // 切换部门时修改查询部门id并查询第一页数据
     selectNode(node) {
-      this.queryParams.departmentId = node.id;
+      this.queryParams.departmentId = node.id; //记录点击的部门id
+      this.queryParams.page = 1; //查询第一页的数据
       this.getEmployeeList();
+    },
+    // 切换页码
+    changePage(newPage) {
+      this.queryParams.page = newPage; // 赋值新页码
+      this.getEmployeeList(); // 查询数据
     },
   },
 };
