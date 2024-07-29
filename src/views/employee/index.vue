@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-07-10 13:46:26
  * @LastEditors: 张良 1077167261@qq.com
- * @LastEditTime: 2024-07-27 23:24:16
+ * @LastEditTime: 2024-07-29 16:57:53
  * @FilePath: \My-admin\src\views\employee\index.vue
 -->
 <template>
@@ -35,11 +35,26 @@
         </el-row>
         <!-- 表格组件 -->
         <el-table :data="list" border>
-          <el-table-column prop="staffPhoto" align="center" label="头像" />
+          <el-table-column prop="staffPhoto" align="center" label="头像">
+            <template v-slot="{ row }">
+              <img
+                v-if="row.staffPhoto"
+                style="width: 40px; height: 40px; border-radius: 50%"
+                src="@/assets/common/avatar.jpg"
+              />
+              <span v-else class="username">{{ row.username?.charAt(4) }}</span>
+            </template>
+          </el-table-column>
           <el-table-column prop="username" label="姓名" />
           <el-table-column prop="mobile" label="手机号" sortable />
           <el-table-column prop="workNumber" label="工号" sortable />
-          <el-table-column prop="formOfEmployment" label="聘用形式" />
+          <el-table-column prop="formOfEmployment" label="聘用形式">
+            <template v-slot="{ row }">
+              <span v-if="row.formOfEmployment === 1">正式</span>
+              <span v-else-if="row.formOfEmployment === 2">非正式</span>
+              <span v-else>暂无信息</span>
+            </template>
+          </el-table-column>
           <el-table-column prop="departmentName" label="部门" />
           <el-table-column prop="timeOfEntry" label="入职时间" sortable />
           <el-table-column label="操作" width="280px">
@@ -101,8 +116,8 @@ export default {
     async getEmployeeList() {
       const { rows } = await getEmployeeList(this.queryParams);
       rows.forEach((item) => {
-        if(item.username.includes('黑马')){
-          item.username = item.username.replace('黑马','xx公司')
+        if (item.username.includes("黑马")) {
+          item.username = item.username.replace("黑马", "xx公司");
         }
       });
       this.list = rows;
