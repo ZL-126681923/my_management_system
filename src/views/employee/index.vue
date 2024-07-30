@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-07-10 13:46:26
  * @LastEditors: 张良 1077167261@qq.com
- * @LastEditTime: 2024-07-30 15:01:12
+ * @LastEditTime: 2024-07-30 15:27:52
  * @FilePath: \My-admin\src\views\employee\index.vue
 -->
 <template>
@@ -33,7 +33,7 @@
         <el-row class="opeate-tools" type="flex" justify="end">
           <el-button size="mini" type="primary">添加员工</el-button>
           <el-button size="mini">excel导入</el-button>
-          <el-button size="mini">excel导出</el-button>
+          <el-button size="mini" @click="exportEmployee()">excel导出</el-button>
         </el-row>
         <!-- 表格组件 -->
         <el-table :data="list" border>
@@ -90,7 +90,8 @@
 <script>
 import { getDepartment } from "@/api/department";
 import { transListToTreeData } from "@/utils";
-import { getEmployeeList } from "@/api/employees";
+import { getEmployeeList, exportEmployee } from "@/api/employees";
+import FileSaver from "file-saver";
 export default {
   name: "Employee",
   data() {
@@ -160,6 +161,13 @@ export default {
         this.queryParams.page = 1;
         this.getEmployeeList();
       }, 300);
+    },
+    //导出员工信息
+    async exportEmployee() {
+      const result = await exportEmployee(); // 导出所有的员工接口
+      // console.log(result); // 使用一个npm包 直接将blob文件下载到本地 file-saver
+      // FileSaver.saveAs(blob对象,文件名称)
+      FileSaver.saveAs(result, "员工信息表.xlsx"); // 下载文件
     },
   },
 };
