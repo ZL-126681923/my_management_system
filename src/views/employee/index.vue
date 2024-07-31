@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-07-10 13:46:26
  * @LastEditors: 张良 1077167261@qq.com
- * @LastEditTime: 2024-07-30 20:48:59
+ * @LastEditTime: 2024-07-31 12:02:42
  * @FilePath: \My-admin\src\views\employee\index.vue
 -->
 <template>
@@ -32,7 +32,9 @@
       <div class="right">
         <el-row class="opeate-tools" type="flex" justify="end">
           <el-button size="mini" type="primary">添加员工</el-button>
-          <el-button size="mini" @click="showExcelDialog=true">excel导入</el-button>
+          <el-button size="mini" @click="showExcelDialog = true"
+            >excel导入</el-button
+          >
           <el-button size="mini" @click="exportEmployee()">excel导出</el-button>
         </el-row>
         <!-- 表格组件 -->
@@ -64,10 +66,21 @@
           <el-table-column prop="departmentName" label="部门" />
           <el-table-column prop="timeOfEntry" label="入职时间" sortable />
           <el-table-column label="操作" width="280px">
-            <template>
+            <template v-slot="{ row }">
               <el-button size="mini" type="text">查看</el-button>
               <el-button size="mini" type="text">角色</el-button>
-              <el-button size="mini" type="text">删除</el-button>
+              <el-popconfirm
+                title="确认删除该行数据吗？"
+                @onConfirm="confirmDel(row.id)"
+              >
+                <el-button
+                  slot="reference"
+                  style="margin-left: 10px"
+                  size="mini"
+                  type="text"
+                  >删除</el-button
+                >
+              </el-popconfirm>
             </template>
           </el-table-column>
         </el-table>
@@ -84,14 +97,17 @@
         </el-row>
       </div>
     </div>
-    <importExcel :showExcelDialog.sync="showExcelDialog" @uploadSuccess="getEmployeeList" />
+    <importExcel
+      :showExcelDialog.sync="showExcelDialog"
+      @uploadSuccess="getEmployeeList"
+    />
   </div>
 </template>
 
 <script>
 import { getDepartment } from "@/api/department";
 import { transListToTreeData } from "@/utils";
-import { getEmployeeList, exportEmployee } from "@/api/employees";
+import { getEmployeeList, exportEmployee, delEmployee } from "@/api/employees";
 import FileSaver from "file-saver";
 import ImportExcel from "./components/import-excel.vue";
 export default {
@@ -175,6 +191,15 @@ export default {
       // FileSaver.saveAs(blob对象,文件名称)
       FileSaver.saveAs(result, "员工信息表.xlsx"); // 下载文件
     },
+    // 删除员工方法
+    async confirmDel(id) {
+      await delEmployee(id)
+      // 判断当前页是否还有数据
+      // 如果没有数据 需要查询上一页的数据(考虑到第一页的情况)
+      if (this.list.length === 1 && this.queryParams.page > 1) this.queryParams.page--
+      this.getEmployeeList()
+      this.$message.success('删除员工成功')
+    }
   },
 };
 </script>
