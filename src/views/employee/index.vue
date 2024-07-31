@@ -84,7 +84,7 @@
         </el-row>
       </div>
     </div>
-    <importExcel :showExcelDialog.sync="showExcelDialog" />
+    <importExcel :showExcelDialog.sync="showExcelDialog" @uploadSuccess="getEmployeeList" />
   </div>
 </template>
 
