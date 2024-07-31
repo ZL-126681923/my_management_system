@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-07-10 13:46:26
  * @LastEditors: 张良 1077167261@qq.com
- * @LastEditTime: 2024-07-31 12:02:42
+ * @LastEditTime: 2024-07-31 12:29:08
  * @FilePath: \My-admin\src\views\employee\index.vue
 -->
 <template>
@@ -31,7 +31,12 @@
       </div>
       <div class="right">
         <el-row class="opeate-tools" type="flex" justify="end">
-          <el-button size="mini" type="primary">添加员工</el-button>
+          <el-button
+            size="mini"
+            type="primary"
+            @click="$router.push('/employee/detail')"
+            >添加员工</el-button
+          >
           <el-button size="mini" @click="showExcelDialog = true"
             >excel导入</el-button
           >
@@ -193,13 +198,14 @@ export default {
     },
     // 删除员工方法
     async confirmDel(id) {
-      await delEmployee(id)
+      await delEmployee(id);
       // 判断当前页是否还有数据
       // 如果没有数据 需要查询上一页的数据(考虑到第一页的情况)
-      if (this.list.length === 1 && this.queryParams.page > 1) this.queryParams.page--
-      this.getEmployeeList()
-      this.$message.success('删除员工成功')
-    }
+      if (this.list.length === 1 && this.queryParams.page > 1)
+        this.queryParams.page--;
+      this.getEmployeeList();
+      this.$message.success("删除员工成功");
+    },
   },
 };
 </script>
