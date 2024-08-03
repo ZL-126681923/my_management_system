@@ -38,6 +38,7 @@
             <el-col :span="12">
               <el-form-item label="部门" prop="departmentId">
                 <!-- 放置及联部门组件 会单独封装-->
+                <selectTree class="inputW"/>
               </el-form-item>
             </el-col>
           </el-row>
@@ -98,7 +99,11 @@
 </template>
 
 <script>
+import selectTree from './components/select-tree.vue';
 export default {
+  components: {
+    selectTree
+  },
   data() {
     return {
       userInfo: {
