@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-08-03 22:26:16
  * @LastEditors: 张良 1077167261@qq.com
- * @LastEditTime: 2024-08-04 15:09:22
+ * @LastEditTime: 2024-08-04 15:29:41
  * @FilePath: \My-admin\src\views\employee\components\select-tree.vue
 -->
 <template>
@@ -44,7 +44,7 @@ export default {
     },
     // 实行双向数据绑定
     changeValue(list) {
-      console.log(list);
+      // console.log(list);
       // 取到数组的最后一次
       if (list.length > 0) {
         this.$emit("input", list[list.length - 1]); // 将最后一位的id取出来 传出去

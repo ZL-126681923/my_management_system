@@ -119,11 +119,16 @@
 
 <script>
 import selectTree from "./components/select-tree.vue";
-import { addEmployee } from "@/api/employees";
+import { addEmployee,getEmployeeDetail } from "@/api/employees";
 
 export default {
   components: {
     selectTree,
+  },
+  created() {
+    // 如何获取路由参数的中id
+    // if (this.$route.params.id) { this.getEmployeeDetail() }
+    this.$route.params.id && this.getEmployeeDetail()
   },
   data() {
     return {
@@ -192,6 +197,16 @@ export default {
         }
       });
     },
+    // 查看员工详情
+    async getEmployeeDetail() {
+      let data = await getEmployeeDetail(this.$route.params.id)
+      if(data.username.includes('黑马')){
+        data.username = data.username.replace('黑马','')
+      }
+      this.userInfo = data
+
+     
+    }
   },
 };
 </script>

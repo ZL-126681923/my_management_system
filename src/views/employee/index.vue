@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-07-10 13:46:26
  * @LastEditors: 张良 1077167261@qq.com
- * @LastEditTime: 2024-07-31 12:29:08
+ * @LastEditTime: 2024-08-04 21:33:20
  * @FilePath: \My-admin\src\views\employee\index.vue
 -->
 <template>
@@ -72,7 +72,12 @@
           <el-table-column prop="timeOfEntry" label="入职时间" sortable />
           <el-table-column label="操作" width="280px">
             <template v-slot="{ row }">
-              <el-button size="mini" type="text">查看</el-button>
+              <el-button
+                size="mini"
+                type="text"
+                @click="$router.push(`/employee/detail/${row.id}`)"
+                >查看</el-button
+              >
               <el-button size="mini" type="text">角色</el-button>
               <el-popconfirm
                 title="确认删除该行数据吗？"
@@ -162,7 +167,7 @@ export default {
       const { rows, total } = await getEmployeeList(this.queryParams);
       rows.forEach((item) => {
         if (item.username.includes("黑马")) {
-          item.username = item.username.replace("黑马", "xx公司");
+          item.username = item.username.replace("黑马", "");
         }
       });
       this.list = rows;
