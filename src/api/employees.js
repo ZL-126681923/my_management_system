@@ -1,3 +1,9 @@
+/*
+ * @Date: 2024-07-27 23:14:22
+ * @LastEditors: 张良 1077167261@qq.com
+ * @LastEditTime: 2024-08-04 15:24:06
+ * @FilePath: \My-admin\src\api\employees.js
+ */
 import request from '@/utils/request'
 
 /*
@@ -49,5 +55,13 @@ export function delEmployee(id) {
   return request({
     method: 'delete',
     url: `/sys/user/${id}`
+  })
+}
+// 新增员工
+export function addEmployee(data) {
+  return request({
+    url: '/sys/user',
+    method: 'post',
+    data
   })
 }
